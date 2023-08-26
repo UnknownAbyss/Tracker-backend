@@ -10,8 +10,8 @@ router.get('/', (req, res) => {
   res.json({msg: 'auth: pong'});
 });
 
-router.get('/login', async (req, res) => {
-    let {user, pass} = req.query;
+router.post('/login', async (req, res) => {
+    let {user, pass} = req.body;
     out = await Users.findOne({user: user, pass: pass});
 
     if (out) {
@@ -32,8 +32,10 @@ router.get('/login', async (req, res) => {
             }
         );
     }
-
-
 })
+
+app.get('*', (req, res) => {
+    res.json({'msg': 'Unknown Auth Route'});
+});
 
 module.exports = router;
