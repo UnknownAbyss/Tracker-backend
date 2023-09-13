@@ -17,6 +17,9 @@ const PositionListSchema = new mongoose.Schema({
   end: {
     type: Date,
   },
+  dist: {
+    type: Number,
+  }
 });
 
 const PositionList = mongoose.model("positionList", PositionListSchema);

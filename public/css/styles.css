@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+* {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.header {
+    width: 100vw;
+    height: 10%;
+    background-color: #333333;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.main {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    height: 85%;
+}
+
+.left {
+    width:50%;
+    padding: 40px 10px;
+    overflow-y: scroll;
+    /* height: 100%; */
+}
+
+.right {
+    width:45%;
+    border: 3px solid black !important; 
+}
+
+.search, .results h1{
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 0px;
+}
+
+.search form, .results {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="date"] {
+    padding: 5px 5px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    width: 300px;
+}
+
+input[type="submit"] {
+    padding: 5px 5px;
+    /* border-radius: 10px; */
+    font-size: 0.8em;
+    width: 100px;
+    background-color: #333;
+    color: white;
+}
+
+th {
+    background-color: #333;
+    color: white;
+    width: 20%;
+    padding: 10px;
+}
+
+td { 
+    text-align: center;
+    padding: 8px;
+}
+
+table {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracker Admin</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+
+<body>
+  <div class="header">
+    Tracker
+  </div>
+  <div class="main">
+    <div class="left">
+      <div class="search">
+        <form>
+          Search:
+          <div>
+            <input type="date" name="date" id="date" />
+            <input type="submit" value="submit" />
+          </div>
+        </form>
+      </div>
+      <div class="results">
+        <h1>Results:</h1>
+        <% if (locals.results) { %>
+        <table>
+          <tr>
+            <th>User</th>
+            <th>Distance</th>
+            <th>Start</th>
+            <th>End</th>
+            <th><a>Map</a></th>
+          </tr>
+          <% for( let index = 0; index < results.length; index++ ) { %>
+          <tr>
+            <td><%= results[index].user %></td>
+            <td><%= results[index].dist %> km</td>
+            <td><%= results[index].start %></td>
+            <td><%= results[index].end %></td>
+            <td><button onclick="
+                                var res = data[<%=index%>].pos;
+                                var out = []
+                                for (var i = 0; i < res.length/2; i++) {
+                                    out.push([res[i*2], res[i*2+1]]);
+                                }
+
+                                if (start || end || polyline) {
+                                    map.removeLayer(start);
+                                    map.removeLayer(end);
+                                    map.removeLayer(polyline);
+                                }
+                                start = L.circleMarker(out[0], {color: 'black'}).addTo(map);
+                                start.bindTooltip('<b>Starting Location</b>').openPopup();
+                                end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
+                                end.bindTooltip('<b>Ending Location</b>')
+                                polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
+                                map.fitBounds(polyline.getBounds());
+                            " %>>Map</button></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } else { %>
+        <i>Search for results...</i>
+        <% }%>
+      </div>
+    </div>
+    <div class="right" id="right">
+    </div>
+  </div>
+
+  <script>
+    const data = <%- JSON.stringify(locals.results?results:[]); %>;
+    const map = L.map('right').setView([28.534915, 77.391560], 15);
+    var polyline;
+    var start;
+    var end;
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+  </script>
+</body>
+
+</html>

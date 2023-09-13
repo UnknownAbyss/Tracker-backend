@@ -6,6 +6,7 @@ const router = express.Router();
 
 const Users = require("../models/user");
 const PositionList = require("../models/positionList");
+require("../controllers/dist");
 
 router.get("/", (req, res) => {
   res.json({ msg: "location: pong" });
@@ -79,13 +80,17 @@ router.post("/submit", authorized, async (req, res) => {
       msg: "Already Submitted"
     });
   }
-  
+
+  var dist = 0;
+  for (var i = 1; i < positions.length/2; i++) {
+    dist += calcCrow(positions[i*2], positions[i*2 + 1], positions[i*2 - 2], positions[i*2 - 1]);
+  }
   var temp = await PositionList.create({
     user: "addi",
     date: reqdate,
     start: start,
     end: end,
-    marked: true,
+    dist: dist,
     poslist: positions
   });
 
