@@ -75,7 +75,7 @@ router.post("/submit", authorized, async (req, res) => {
   if (posObj) {
     console.log(posObj);
     return res.json( {
-      code: -4,
+      code: 0,
       msg: "Already Submitted"
     });
   }
