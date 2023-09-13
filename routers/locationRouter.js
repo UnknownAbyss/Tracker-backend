@@ -72,7 +72,7 @@ router.post("/submit", authorized, async (req, res) => {
     }
   });
 
-  if (posObj.marked) {
+  if (posObj) {
     console.log(posObj);
     return res.json( {
       code: -4,

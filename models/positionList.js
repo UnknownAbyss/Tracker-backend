@@ -17,10 +17,6 @@ const PositionListSchema = new mongoose.Schema({
   end: {
     type: Date,
   },
-  marked: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const PositionList = mongoose.model("positionList", PositionListSchema);
