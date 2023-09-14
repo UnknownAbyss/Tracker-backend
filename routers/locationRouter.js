@@ -6,7 +6,7 @@ const router = express.Router();
 
 const Users = require("../models/user");
 const PositionList = require("../models/positionList");
-require("../controllers/dist");
+const { calcCrow } = require("../controllers/dist");
 
 router.get("/", (req, res) => {
   res.json({ msg: "location: pong" });

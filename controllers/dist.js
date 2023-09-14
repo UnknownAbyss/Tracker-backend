@@ -17,3 +17,5 @@ function toRad(Value)
 {
     return Value * Math.PI / 180;
 }
+
+module.exports = { calcCrow, toRad };
