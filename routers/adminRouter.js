@@ -35,10 +35,14 @@ router.get("/", async (req, res) => {
       });
     };
 
-    res.render('home', {results: data});
+    return res.render('home', {results: data});
   } else {
-    res.render('home');
+    return res.render('home');
   }
+});
+
+router.get("/accounts", (req, res) => {
+  return res.render('accounts');
 });
 
 

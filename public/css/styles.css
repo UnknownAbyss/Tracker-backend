@@ -8,15 +8,25 @@ body {
 }
 
 .header {
-    width: 100vw;
+    width: 90vw;
     height: 10%;
+    padding: 0px 5vw;
     background-color: #333333;
-    color: white;
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
     align-items: center;
+}
+
+.header > a {
+    color: white;
     font-size: 2em;
     font-weight: bold;
+    text-align: center;
+}
+
+.header > .righthead {
+    text-align: right;
 }
 
 .main {
@@ -34,7 +44,7 @@ body {
 }
 
 .right {
-    width:45%;
+    width:50%;
     border: 3px solid black !important; 
 }
 
@@ -58,7 +68,6 @@ input[type="date"] {
 
 input[type="submit"] {
     padding: 5px 5px;
-    /* border-radius: 10px; */
     font-size: 0.8em;
     width: 100px;
     background-color: #333;
@@ -83,4 +92,14 @@ table {
 
 tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 768px) {
+    .left {
+        width: 100%;
+    }
+
+    .right {
+        display: none;
+    }
 }
