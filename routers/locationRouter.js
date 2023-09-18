@@ -52,8 +52,11 @@ router.post("/submit", authorized, async (req, res) => {
   var curdate = Date.now();
   var reqdate = new Date(date);
 
-  var today = moment(curdate).utc().utcOffset("+05:30");
-  var tomorrow = moment(curdate).utc().utcOffset("+05:30").add(1, 'days');
+
+  var today = moment(curdate);
+  var tomorrow = moment(curdate);
+  today = today.utcOffset("-01:30");
+  tomorrow = tomorrow.utcOffset("-01:30").add(1, "days");
   today.set({hour: 0, minute: 0, second: 0, millisecond: 0});
   tomorrow.set({hour: 0, minute: 0, second: 0, millisecond: 0});
 

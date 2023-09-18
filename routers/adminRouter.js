@@ -10,10 +10,12 @@ router.get("/", async (req, res) => {
   if (date) {
     var reqdate = new Date(date);
 
-    var today = moment(reqdate).utc().utcOffset("+05:30");
-    var tomorrow = moment(reqdate).utc().utcOffset("+05:30").add(1, 'days');
-    today.set({hour: 0, minute: 0, second: 0, millisecond: 0});
-    tomorrow.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+    var today = moment(reqdate);
+    var tomorrow = moment(reqdate);
+    today = today.utcOffset("+05:30");
+    tomorrow = tomorrow.utcOffset("+05:30").add(1, "days");
+    today.set({hour: 7, minute: 0, second: 0, millisecond: 0});
+    tomorrow.set({hour: 7, minute: 0, second: 0, millisecond: 0});
     
     var posObj = await PositionList.find( {
       date: {
@@ -41,8 +43,28 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/accounts", (req, res) => {
-  return res.render('accounts');
+router.get("/accounts", async (req, res) => {
+  let users = await Users.find();
+  return res.render('accounts', {msg: '', users: users});
+});
+
+router.post("/accounts", async (req, res) => {
+  let { user, pass } = req.body;
+  let userObj = await Users.findOne({ user });
+  if (userObj) {
+    let users = await Users.find();
+    return res.render('accounts', {msg: 'User already exists', users: users});
+  }
+  
+  userObj = await Users.create({ user, pass });
+  let users = await Users.find();
+  return res.render('accounts', {msg: 'Account created', users: users});
+});
+
+router.get("/delete", async (req, res) => {
+  let {user} = req.query;
+  await Users.deleteOne({ user });
+  return res.redirect('/admin/accounts');
 });
 
 

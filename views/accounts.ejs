@@ -6,11 +6,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tracker Admin</title>
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body> 
     <%- include('partials/header.ejs', {color: 'orange'}) %>
+    <div class="main">
+        <div class="left">
+            <h1>Accounts:</h1>
+            <% if (locals.users) { %>
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th><a>Delete</a></th>
+                </tr>
+                <% for( let index = 0; index < users.length; index++ ) { %>
+                    <tr>
+                        <td><%= users[index].user %></td>
+                        <td class="hoverhide"><%= users[index].pass %></td>
+                        <td><button onclick="
+                        location.href = '/admin/delete?user=<%- users[index].user %>';
+                        console.log('hello');
+                        " style=" background-color: red; "><span style="color: white; font-weight: bolder; font-size: 1.2em;">X</span></button></td>
+                    </tr>
+                <% } %>
+            </table>
+            <% } else { %>
+                <i>No accounts...</i>
+            <% }%>
+        </div>
+        <div class="right">
+            <h1>Add Account</h1>
+            <form class="createform" method="post">
+                <label>Username</label>
+                <input type="text" id="user" name="user" required>
+                <label>Password</label>
+                <input type="text" id="pass" name="pass" required>
+                <input type="submit" id="sub" value="submit">
+                <span style="font-size: 0.9em; color: blueviolet; font-weight: bold;"> <%- msg %> </span>
+            </form>
+        </div>
+    </div>
+    <script src="/js/script.js"></script>
+    <script>
+        document.querySelector("#pass").value = generatePass();
+    </script>
 </body>
 </html>

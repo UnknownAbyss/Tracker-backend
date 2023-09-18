@@ -46,6 +46,10 @@ body {
 .right {
     width:50%;
     border: 3px solid black !important; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .search, .results h1{
@@ -88,6 +92,7 @@ td {
 
 table {
     border: 1px solid black;
+    width: 100%;;
 }
 
 tr:nth-child(even) {
@@ -102,4 +107,39 @@ tr:nth-child(even) {
     .right {
         display: none;
     }
+}
+
+.createform {
+    display: flex;
+    flex-direction: column;
+}
+
+.createform > label {
+    font-size: 1.3vw;
+    font-weight: bold;
+    margin-top: 1.3vw;
+}
+
+.createform > input {
+    font-size: 1vw;
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 2vw;
+    width: 15vw;
+    margin-bottom: 0.5vw;
+}
+
+.hoverhide {
+    color: black;
+    background-color: black;
+    user-select:none;
+}
+
+.hoverhide:hover {
+    background-color: transparent;
+    user-select:all;
+}
+
+button, input[type="submit"] {
+    cursor: pointer;
 }
