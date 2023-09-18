@@ -27,7 +27,7 @@
       </div>
       <div class="results">
         <h1>Results:</h1>
-        <% if (locals.results) { %>
+        <% if (locals.results && results.length > 0) { %>
         <table>
           <tr>
             <th>User</th>
@@ -74,6 +74,7 @@
   </div>
 
   <script>
+    document.getElementById('date').valueAsDate = new Date(new Date().getTime() + 330*60000);
     const data = <%- JSON.stringify(locals.results?results:[]); %>;
     const map = L.map('right').setView([28.534915, 77.391560], 15);
     var polyline;
