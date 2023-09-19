@@ -52,10 +52,13 @@ body {
     align-items: center;
 }
 
-.search, .results h1{
+.search, .results{
+    margin: 20px 0px;
+}
+
+.results > h1 {
     font-size: 1.3em;
     font-weight: bold;
-    margin: 20px 0px;
 }
 
 .search form, .results {
@@ -142,4 +145,14 @@ tr:nth-child(even) {
 
 button, input[type="submit"] {
     cursor: pointer;
+}
+
+.csv {
+    background:
+    conic-gradient(from 90deg at 3px 3px,rgb(174, 232, 174) 90deg,rgb(228, 228, 228) 0) 
+    0 0/20px 20px;
+    height: 46px;
+    width: 146px;
+    font-weight: bolder;
+    font-size: 1em;
 }

@@ -13,14 +13,14 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: false}));
 
 app.use("/auth", authRouter);
 app.use("/location", locationRouter);
 app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
-  res.json({ msg: "Test successful" });
+  res.redirect("/admin");
 });
 
 app.use((req, res, next) => {

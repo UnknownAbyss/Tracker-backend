@@ -26,46 +26,47 @@
         </form>
       </div>
       <div class="results">
-        <h1>Results:</h1>
+        <h1>Results:<span style="font-weight: normal; font-size: 0.9em;"> { <%= locals.date?new Date(date).toDateString():"" %> } </span></h1>
         <% if (locals.results && results.length > 0) { %>
-        <table>
-          <tr>
-            <th>User</th>
-            <th>Distance</th>
-            <th>Start</th>
-            <th>End</th>
-            <th><a>Map</a></th>
-          </tr>
-          <% for( let index = 0; index < results.length; index++ ) { %>
-          <tr>
-            <td><%= results[index].user %></td>
-            <td><%= results[index].dist.toFixed(2) %> km</td>
-            <td><%= results[index].start %></td>
-            <td><%= results[index].end %></td>
-            <td><button onclick="
-                                var res = data[<%=index%>].pos;
-                                var out = []
-                                for (var i = 0; i < res.length/2; i++) {
-                                    out.push([res[i*2], res[i*2+1]]);
-                                }
+          <button class="csv" onclick="download_csv()">Download CSV</button>
+          <table>
+            <tr>
+              <th>User</th>
+              <th>Distance</th>
+              <th>Start</th>
+              <th>End</th>
+              <th><a>Map</a></th>
+            </tr>
+            <% for( let index = 0; index < results.length; index++ ) { %>
+            <tr>
+              <td><%= results[index].user %></td>
+              <td><%= results[index].dist.toFixed(2) %> km</td>
+              <td><%= results[index].start %></td>
+              <td><%= results[index].end %></td>
+              <td><button onclick="
+                                  var res = data[<%=index%>].pos;
+                                  var out = []
+                                  for (var i = 0; i < res.length/2; i++) {
+                                      out.push([res[i*2], res[i*2+1]]);
+                                  }
 
-                                if (start || end || polyline) {
-                                    map.removeLayer(start);
-                                    map.removeLayer(end);
-                                    map.removeLayer(polyline);
-                                }
-                                start = L.circleMarker(out[0], {color: 'black', }).addTo(map);
-                                start.bindTooltip('<b>Starting Location</b>').openPopup();
-                                end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
-                                end.bindTooltip('<b>Ending Location</b>')
-                                polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
-                                map.fitBounds(polyline.getBounds());
-                            " %>>Map</button></td>
-          </tr>
-          <% } %>
-        </table>
+                                  if (start || end || polyline) {
+                                      map.removeLayer(start);
+                                      map.removeLayer(end);
+                                      map.removeLayer(polyline);
+                                  }
+                                  start = L.circleMarker(out[0], {color: 'black', }).addTo(map);
+                                  start.bindTooltip('<b>Starting Location</b>').openPopup();
+                                  end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
+                                  end.bindTooltip('<b>Ending Location</b>')
+                                  polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
+                                  map.fitBounds(polyline.getBounds());
+                              " %>>Map</button></td>
+            </tr>
+            <% } %>
+          </table>
         <% } else { %>
-        <i>Search for results...</i>
+          <i>Search for results...</i>
         <% }%>
       </div>
     </div>
@@ -74,7 +75,11 @@
   </div>
 
   <script>
-    document.getElementById('date').valueAsDate = new Date(new Date().getTime() + 330*60000);
+    var date1 = new Date(new Date().getTime() + 330*60000);
+    var date2 = new Date(<%= locals.date?date:0 %>);
+    console.log(<%= locals.date?date:0 %>)
+    console.log(<%= locals.date?date:0 %>)
+    document.getElementById('date').valueAsDate = date1;
     const data = <%- JSON.stringify(locals.results?results:[]); %>;
     const map = L.map('right').setView([28.534915, 77.391560], 15);
     var polyline;
@@ -84,6 +89,18 @@
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
+    function download_csv() {  
+      var csv = 'User,Distance(km),Start,End\n';
+      data.forEach(function(row) {
+        csv += `${row.user},${row.dist.toFixed(2)}, ${row.start}, ${row.end}\n`;
+      });  
+      var hiddenElement = document.createElement('a');  
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+      hiddenElement.target = '_blank';  
+      hiddenElement.download = `${date2.getDate()}-${date2.getMonth() + 1}-${date2.getFullYear()}.csv`;  
+      hiddenElement.click();  
+    }  
   </script>
 </body>
 
