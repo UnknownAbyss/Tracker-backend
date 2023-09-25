@@ -24,6 +24,10 @@
                         <td><%= users[index].user %></td>
                         <td class="hoverhide"><%= users[index].pass %></td>
                         <td><button onclick="
+                        var conf = window.confirm('Are you sure you want to delete user:' + '<%= users[index].user %>');
+                        if (conf == false) {
+                            return;
+                        }
                         location.href = '/admin/delete?user=<%- users[index].user %>';
                         console.log('hello');
                         " style=" background-color: red; "><span style="color: white; font-weight: bolder; font-size: 1.2em;">X</span></button></td>
