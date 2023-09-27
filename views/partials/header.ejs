@@ -3,8 +3,15 @@
 <div class="header" style=<%- `"border-bottom: 10px solid ${color};"` %> >
     <div class="lefthead">
     </div>
-    <a href="/admin" style="text-decoration: none; color: white;">Tracker</a>
+    <a href="/admin/home" style="text-decoration: none; color: white;">Tracker</a>
     <div class="righthead">
-        <a href="/admin/accounts" style="text-decoration: none; color: white;">Accounts</a>
+        <a href="/admin/home" style="text-decoration: none; color: white;">Home</a>
+        <% if (locals.admin && admin) { %>
+            <a href="/admin/accounts" style="text-decoration: none; color: white;">Accounts</a>
+        <% } %>
+        <a onclick="
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        location.href = '/admin/login'
+        " style="text-decoration: none; color: white; cursor: pointer;">Logout</a>
     </div>
 </div>

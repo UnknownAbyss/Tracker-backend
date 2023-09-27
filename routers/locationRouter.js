@@ -105,6 +105,22 @@ router.post("/submit", authorized, async (req, res) => {
       dist: dist,
       poslist: positions
     });
+
+    var posObj2 = await PositionList.findOne( {
+      user: req.rawuser,
+      date: {
+        $gte: today,
+        $lt: tomorrow,
+      }
+    });
+  
+    if (posObj2) {
+      console.log(posObj);
+      return res.json( {
+        code: 0,
+        msg: "Already Submitted"
+      });
+    }
   
     return res.json( {
       code: 0,

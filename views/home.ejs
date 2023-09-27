@@ -43,25 +43,33 @@
               <td><%= results[index].dist.toFixed(2) %> km</td>
               <td><%= results[index].start %></td>
               <td><%= results[index].end %></td>
-              <td><button onclick="
-                                  var res = data[<%=index%>].pos;
-                                  var out = []
-                                  for (var i = 0; i < res.length/2; i++) {
-                                      out.push([res[i*2], res[i*2+1]]);
-                                  }
+              <td>
+                <% if (results[index].pos.length != 0) { %>                 
+                  <button onclick="
+                                    var res = data[<%=index%>].pos;
+                                    var out = []
+                                    for (var i = 0; i < res.length/2; i++) {
+                                        out.push([res[i*2], res[i*2+1]]);
+                                    }
 
-                                  if (start || end || polyline) {
-                                      map.removeLayer(start);
-                                      map.removeLayer(end);
-                                      map.removeLayer(polyline);
-                                  }
-                                  start = L.circleMarker(out[0], {color: 'black', }).addTo(map);
-                                  start.bindTooltip('<b>Starting Location</b>').openPopup();
-                                  end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
-                                  end.bindTooltip('<b>Ending Location</b>')
-                                  polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
-                                  map.fitBounds(polyline.getBounds());
-                              " %>>Map</button></td>
+                                    if (start || end || polyline) {
+                                        map.removeLayer(start);
+                                        map.removeLayer(end);
+                                        map.removeLayer(polyline);
+                                    }
+                                    start = L.circleMarker(out[0], {color: 'black', }).addTo(map);
+                                    start.bindTooltip('<b>Starting Location</b>').openPopup();
+                                    end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
+                                    end.bindTooltip('<b>Ending Location</b>')
+                                    polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
+                                    map.fitBounds(polyline.getBounds());
+                                " %>>Map</button>
+                <% } else if (results[index].start == "-") { %>  
+                  <span style="color: red;"> Absent </span>
+                <% } else{ %>
+                  <span style="color: orange;"> No Map Data </span>
+                <% } %>
+                </td>
             </tr>
             <% } %>
           </table>
@@ -91,9 +99,9 @@
     }).addTo(map);
 
     function download_csv() {  
-      var csv = 'User,Distance(km),Start,End\n';
+      var csv = 'User,Distance(km),Start,End,Present\n';
       data.forEach(function(row) {
-        csv += `${row.user},${row.dist.toFixed(2)}, ${row.start}, ${row.end}\n`;
+        csv += `${row.user},${row.dist.toFixed(2)}, ${row.start}, ${row.end}, ${row.start == "-"?"No":"Yes" }\n`;
       });  
       var hiddenElement = document.createElement('a');  
       hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  

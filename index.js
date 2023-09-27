@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 require("dotenv").config();
 require("./models/init");
 
@@ -12,9 +14,12 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use('/favicon.ico', express.static('public/favicon.ico'));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(cookieParser());
+
 
 app.use("/auth", authRouter);
 app.use("/location", locationRouter);

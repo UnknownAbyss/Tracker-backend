@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Users = require("../models/user");
+const Admins = require("../models/admin");
 
 const authorized = async (req, res, next) => {
   req.rawauth = false;
@@ -31,4 +32,28 @@ const authorized = async (req, res, next) => {
   }
 };
 
-module.exports = { authorized };
+const backauth = async (req, res, next) => {
+  req.rawauth = false;
+  req.priv = false;
+  if (req.cookies?.token == undefined || req.cookies?.token == null) {
+    return next();
+  }
+  let token = req.cookies.token;
+  await jwt.verify(token, process.env.JWT, async (err, decoded) => {
+    if (err) {
+      return next();
+    }
+
+    let user = await Admins.exists({user: decoded.user});
+    if (!user) {
+      return next();
+    }
+
+    req.rawauth = true;
+    req.priv = decoded.admin;
+  })
+
+  return next();
+}
+
+module.exports = { authorized, backauth };

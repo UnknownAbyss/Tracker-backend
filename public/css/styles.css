@@ -29,6 +29,10 @@ body {
     text-align: right;
 }
 
+.header > .righthead > a {
+    margin: 0 10px;
+}
+
 .main {
     padding: 10px;
     display: flex;

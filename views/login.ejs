@@ -1,0 +1,16 @@
+<html>
+    <head>
+      <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body style="height: 100vh; width: 100vw; display: flex; flex-direction: column;; justify-content: center; align-items: center;">
+        <h1 style="color: red;">Tracker - Login</h1>
+        <form style="display: flex; flex-direction: column; align-items: center; gap: 10px;" method="post">
+            <label for="user">Username</label>
+            <input type="text" name="user" required autofocus>
+            <label for="pass">Password</label>
+            <input type="password" name="pass" required>
+            <input type="submit" value="submit">
+            <span style="color: red;"> <%- locals.msg?msg:"" %> </span>
+        </form>
+    </body>
+</html>
