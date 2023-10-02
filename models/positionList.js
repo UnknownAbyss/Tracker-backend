@@ -19,6 +19,9 @@ const PositionListSchema = new mongoose.Schema({
   },
   dist: {
     type: Number,
+  },
+  geometry: {
+    type: String,
   }
 });
 

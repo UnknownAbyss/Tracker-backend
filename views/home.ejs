@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracker Admin</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracker Admin</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <body>
+    <%- include('partials/header.ejs', {color: 'lightgreen'}) %>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-</head>
-
-<body>
-  <%- include('partials/header.ejs', {color: 'lightgreen'}) %>
-  
-  <div class="main">
-    <div class="left">
-      <div class="search">
-        <form>
-          Search:
-          <div>
-            <input type="date" name="date" id="date" />
-            <input type="submit" value="submit" />
-          </div>
-        </form>
-      </div>
-      <div class="results">
-        <h1>Results:<span style="font-weight: normal; font-size: 0.9em;"> { <%= locals.date?new Date(date).toDateString():"" %> } </span></h1>
-        <% if (locals.results && results.length > 0) { %>
+    <div class="main">
+      <div class="left">
+        <div class="search">
+          <form>
+            Search:
+            <div>
+              <input type="date" name="date" id="date" />
+              <input type="submit" value="submit" />
+            </div>
+          </form>
+        </div>
+        <div class="results">
+          <h1>
+            Results:<span style="font-weight: normal; font-size: 0.9em">
+              { <%= locals.date?new Date(date).toDateString():"" %> }
+            </span>
+          </h1>
+          <% if (locals.results && results.length > 0) { %>
           <button class="csv" onclick="download_csv()">Download CSV</button>
           <table>
             <tr>
@@ -44,72 +55,92 @@
               <td><%= results[index].start %></td>
               <td><%= results[index].end %></td>
               <td>
-                <% if (results[index].pos.length != 0) { %>                 
-                  <button onclick="
+                <% if (results[index].pos.length != 0) { %>
+                <button
+                  onclick="
                                     var res = data[<%=index%>].pos;
+                                    var resgeo = data[<%=index%>].geometry;
                                     var out = []
                                     for (var i = 0; i < res.length/2; i++) {
                                         out.push([res[i*2], res[i*2+1]]);
                                     }
 
                                     if (start || end || polyline) {
-                                        map.removeLayer(start);
-                                        map.removeLayer(end);
-                                        map.removeLayer(polyline);
+                                      map.removeLayer(start);
+                                      map.removeLayer(end);
+                                      map.removeLayer(polyline);
                                     }
+                                    if (xstart || xend || xpolyline) {
+                                      map.removeLayer(xpolyline);
+                                      map.removeLayer(xstart);
+                                      map.removeLayer(xend);
+                                    }
+
+                                    if (!(resgeo == '' || resgeo == undefined || resgeo == null)) {
+                                      let datageo = L.PolylineUtil.decode(resgeo, 5)
+                                      xstart = L.circleMarker(datageo[0], {color: 'green', fillOpacity: 0.8}).addTo(map);
+                                      xend = L.circleMarker(datageo[datageo.length - 1], {color: 'red', fillOpacity: 0.8}).addTo(map);
+                                      xpolyline = L.polyline(datageo, {color: 'green', dashArray: '4', weight: '5'}).addTo(map);
+                                    } 
                                     start = L.circleMarker(out[0], {color: 'black', }).addTo(map);
-                                    start.bindTooltip('<b>Starting Location</b>').openPopup();
                                     end = L.circleMarker(out[out.length - 1], {color: 'blue'}).addTo(map);
-                                    end.bindTooltip('<b>Ending Location</b>')
                                     polyline = L.polyline(out, {color: 'red', dashArray: '4'}).addTo(map);
+                                    start.bindTooltip('<b>Starting Location</b>').openPopup();
+                                    end.bindTooltip('<b>Ending Location</b>')
                                     map.fitBounds(polyline.getBounds());
-                                " %>>Map</button>
-                <% } else if (results[index].start == "-") { %>  
-                  <span style="color: red;"> Absent </span>
+                                "
+                  %
+                >
+                  >Map
+                </button>
+                <% } else if (results[index].start == "-") { %>
+                <span style="color: red"> Absent </span>
                 <% } else{ %>
-                  <span style="color: orange;"> No Map Data </span>
+                <span style="color: orange"> No Map Data </span>
                 <% } %>
-                </td>
+              </td>
             </tr>
             <% } %>
           </table>
-        <% } else { %>
+          <% } else { %>
           <i>Search for results...</i>
-        <% }%>
+          <% }%>
+        </div>
       </div>
+      <div class="right" id="right"></div>
     </div>
-    <div class="right" id="right">
-    </div>
-  </div>
 
-  <script>
-    var date1 = new Date(new Date().getTime() + 330*60000);
-    var date2 = new Date(<%= locals.date?date:0 %>);
-    console.log(<%= locals.date?date:0 %>)
-    console.log(<%= locals.date?date:0 %>)
-    document.getElementById('date').valueAsDate = date1;
-    const data = <%- JSON.stringify(locals.results?results:[]); %>;
-    const map = L.map('right').setView([28.534915, 77.391560], 15);
-    var polyline;
-    var start;
-    var end;
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    <script src="/js/polyline.js"></script>
+    <script>
+      var date1 = new Date(new Date().getTime() + 330*60000);
+      var date2 = new Date(<%= locals.date?date:0 %>);
+      console.log(<%= locals.date?date:0 %>)
+      console.log(<%= locals.date?date:0 %>)
+      document.getElementById('date').valueAsDate = date1;
+      const data = <%- JSON.stringify(locals.results?results:[]); %>;
+      const map = L.map('right').setView([28.534915, 77.391560], 15);
+      var polyline;
+      var start;
+      var end;
+      var xpolyline;
+      var xstart;
+      var xend;
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
 
-    function download_csv() {  
-      var csv = 'User,Distance(km),Start,End,Present\n';
-      data.forEach(function(row) {
-        csv += `${row.user},${row.dist.toFixed(2)}, ${row.start}, ${row.end}, ${row.start == "-"?"No":"Yes" }\n`;
-      });  
-      var hiddenElement = document.createElement('a');  
-      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
-      hiddenElement.target = '_blank';  
-      hiddenElement.download = `${date2.getDate()}-${date2.getMonth() + 1}-${date2.getFullYear()}.csv`;  
-      hiddenElement.click();  
-    }  
-  </script>
-</body>
-
+      function download_csv() {
+        var csv = 'User,Distance(km),Start,End,Present\n';
+        data.forEach(function(row) {
+          csv += `${row.user},${row.dist.toFixed(2)}, ${row.start}, ${row.end}, ${row.start == "-"?"No":"Yes" }\n`;
+        });
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = `${date2.getDate()}-${date2.getMonth() + 1}-${date2.getFullYear()}.csv`;
+        hiddenElement.click();
+      }
+    </script>
+  </body>
 </html>

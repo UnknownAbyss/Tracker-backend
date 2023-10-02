@@ -6,7 +6,7 @@ const router = express.Router();
 
 const Users = require("../models/user");
 const PositionList = require("../models/positionList");
-const { calcCrow } = require("../controllers/dist");
+const { calcCrow, processLoc } = require("../controllers/dist");
 
 router.get("/", (req, res) => {
   res.json({ msg: "location: pong" });
@@ -92,43 +92,54 @@ router.post("/submit", authorized, async (req, res) => {
         msg: "Already Submitted"
       });
     }
-  
-    var dist = 0;
-    for (var i = 1; i < positions.length/2; i++) {
-      dist += calcCrow(positions[i*2], positions[i*2 + 1], positions[i*2 - 2], positions[i*2 - 1]);
-    }
-    var temp = await PositionList.create({
-      user: req.rawuser,
-      date: reqdate,
-      start: start,
-      end: end,
-      dist: dist,
-      poslist: positions
-    });
 
-    var posObj2 = await PositionList.findOne( {
-      user: req.rawuser,
-      date: {
-        $gte: today,
-        $lt: tomorrow,
+    let posdata = []
+    for (let i = 0; i < positions.length/2; i++) {
+      posdata.push( [ positions[i*2], positions[i*2 + 1] ] )
+    }
+
+    let t = await processLoc(posdata);
+    let geometry = t[0]
+    let dist = t[1]
+
+    if (dist == -1) {
+
+      dist = 0;
+      for (var i = 1; i < positions.length/2; i++) {
+        dist += calcCrow(positions[i*2], positions[i*2 + 1], positions[i*2 - 2], positions[i*2 - 1]);
       }
-    });
-  
-    if (posObj2) {
-      console.log(posObj);
-      return res.json( {
-        code: 0,
-        msg: "Already Submitted"
+
+      var temp = await PositionList.create({
+        user: req.rawuser,
+        date: reqdate,
+        start: start,
+        end: end,
+        dist: dist/1000,
+        poslist: positions,
+        geometry: geometry
+      });
+    } else {
+      var temp = await PositionList.create({
+        user: req.rawuser,
+        date: reqdate,
+        start: start,
+        end: end,
+        dist: dist/1000,
+        poslist: positions,
+        geometry: ""
       });
     }
   
     return res.json( {
       code: 0,
+      dist: dist,
       msg: "Submitted Successfully"
     });
   } catch (err) {
+    console.log(err)
     return res.json( {
       code: -1,
+      dist: -1,
       msg: "Server Error"
     });
   }

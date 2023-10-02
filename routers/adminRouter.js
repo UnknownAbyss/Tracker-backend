@@ -80,6 +80,7 @@ router.get("/home", backauth, async (req, res) => {
             start: x,
             end: y,
             pos: temp.poslist,
+            geometry: temp.geometry
           });
         } else {
           data.push({
@@ -88,6 +89,7 @@ router.get("/home", backauth, async (req, res) => {
             start: "-",
             end: "-",
             pos: [],
+            geometry: ""
           });
         }
       }
