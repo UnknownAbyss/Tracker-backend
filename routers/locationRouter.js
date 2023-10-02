@@ -47,14 +47,16 @@ router.post("/submit", authorized, async (req, res) => {
     if (!req.rawauth) {
       return res.json( {
         code: -1,
-        msg: "User Authorization Failed"
+        msg: "User Authorization Failed",
+        dist: -1,
       });
     }
   
     if (!positions || !start || !end || !date) {;
       return res.json( {
         code: -2,
-        msg: "Invalid Request"
+        msg: "Invalid Request",
+        dist: -1,
       });
     }
   
@@ -72,7 +74,8 @@ router.post("/submit", authorized, async (req, res) => {
     if (today > reqdate || reqdate >= tomorrow) {
       return res.json( {
         code: -3,
-        msg: "Clock not synced"
+        msg: "Clock not synced",
+        dist: -1,
       });
     }
   
@@ -89,7 +92,8 @@ router.post("/submit", authorized, async (req, res) => {
       console.log(posObj);
       return res.json( {
         code: 0,
-        msg: "Already Submitted"
+        msg: "Already Submitted",
+        dist: -1,
       });
     }
 
