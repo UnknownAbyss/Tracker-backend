@@ -120,7 +120,7 @@ router.post("/submit", authorized, async (req, res) => {
         end: end,
         dist: dist/1000,
         poslist: positions,
-        geometry: geometry
+        geometry: ""
       });
     } else {
       var temp = await PositionList.create({
@@ -130,7 +130,7 @@ router.post("/submit", authorized, async (req, res) => {
         end: end,
         dist: dist/1000,
         poslist: positions,
-        geometry: ""
+        geometry: geometry
       });
     }
   
